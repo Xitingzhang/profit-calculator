@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 在<head>中添加以下meta标签增强微信兼容性 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>收益模拟计算器</title>
+  <style>
+    :root {
+      --primary-color: #28a745;
+      --secondary-color: #17a2b8;
+      --border-color: #ddd;
+      --light-bg: #f8f9fa;
+      --dark-text: #343a40;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+      color: var(--dark-text);
+      line-height: 1.6;
+    }
+    
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 30px;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .input-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #495057;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    input:focus, select:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+    }
+    
+    button {
+      margin-top: 25px;
+      padding: 12px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      width: 100%;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    
+    button:hover {
+      background-color: #218838;
+      transform: translateY(-2px);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .result-section {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: var(--light-bg);
+      border-radius: 8px;
+      border-left: 4px solid var(--primary-color);
+    }
+    
+    .result-title {
+      font-size: 20px;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    
+    .result-item {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .result-value {
+      font-weight: 600;
+      color: var(--dark-text);
+    }
+    
+    .total-result {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px dashed var(--border-color);
+      font-size: 18px;
+    }
+    
+    .disclaimer {
+      margin-top: 25px;
+      font-size: 12px;
+      color: #6c757d;
+      line-height: 1.5;
+    }
+    
+    .agent-comparison {
+      margin-top: 30px;
+    }
+    
+    .comparison-title {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: var(--secondary-color);
+    }
+    
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .comparison-card {
+      padding: 15px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-top: 3px solid var(--secondary-color);
+    }
+    
+    .card-title {
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--secondary-color);
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+      
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>收益模拟计算器</h1>
+  
+  <div class="input-group">
+    <label for="agentLevel">选择代理级别：</label>
+    <select id="agentLevel">
+      <option value="市级代理">市级代理</option>
+      <option value="区县代理">区县代理</option>
+      <option value="街道代理">街道代理</option>
+      <option value="社区代理">社区代理</option>
+      <option value="服务商">服务商</option>
+      <option value="推广专员">推广专员</option>
+    </select>
+  </div>
+  
+  <div class="input-group">
+    <label for="dailySales">每家店每日流水（元）：</label>
+    <input type="number" id="dailySales" placeholder="例如：10000" min="0" step="100" />
+  </div>
+  
+  <div class="input-group">
+    <label for="shopCount">入驻店铺数量（家）：</label>
+    <input type="number" id="shopCount" placeholder="例如：10" min="0" />
+  </div>
+  
+  <div class="input-group">
+    <label for="userCount">用户购买助力金店礼包数量（个）：</label>
+    <input type="number" id="userCount" placeholder="例如：5" min="0" />
+  </div>
+
+  <div class="input-group">
+    <label for="userZhuqiCount">用户购买助力企业礼包数量（个）：</label>
+    <input type="number" id="userZhuqiCount" placeholder="例如：3" min="0" />
+  </div>
+  
+  <h3 class="comparison-title">招商数量设置</h3>
+  
+  <div class="comparison-grid">
+    <div class="comparison-card">
+      <div class="card-title">市级代理</div>
+      <input type="number" id="shidaiCount" placeholder="招商数量" min="0" />
+    </div>
+    <div class="comparison-card">
+      <div class="card-title">区县代理</div>
+      <input type="number" id="qudaiCount" placeholder="招商数量" min="0" />
+    </div>
+    <div class="comparison-card">
+      <div class="card-title">街道代理</div>
+      <input type="number" id="jiedaiCount" placeholder="招商数量" min="0" />
+    </div>
+    <div class="comparison-card">
+      <div class="card-title">社区代理</div>
+      <input type="number" id="shequCount" placeholder="招商数量" min="0" />
+    </div>
+    <div class="comparison-card">
+      <div class="card-title">服务商</div>
+      <input type="number" id="fuwushangCount" placeholder="招商数量" min="0" />
+    </div>
+    <div class="comparison-card">
+      <div class="card-title">推广专员</div>
+      <input type="number" id="tuiguangCount" placeholder="招商数量" min="0" />
+    </div>
+  </div>
+  
+  <button onclick="calculate()">计算综合收益</button>
+  
+  <div id="resultContainer"></div>
+</div>
+ 
+<script>
+  // 代理级别配置数据（都按商家让利百分之20计算）
+  const agentConfig = {
+    '市级代理': { rate: 0.012, recruitRates: { shidai: 0.10, qudai: 0.40, jiedai: 0.40, shequ: 0.40, fuwushang: 0.40, tuiguang: 0.40 } },
+    '区县代理': { rate: 0.012, recruitRates: { shidai: 0.10, qudai: 0.10, jiedai: 0.40, shequ: 0.40, fuwushang: 0.40, tuiguang: 0.40 } },
+    '街道代理': { rate: 0.012, recruitRates: { shidai: 0.10, qudai: 0.10, jiedai: 0.10, shequ: 0.40, fuwushang: 0.40, tuiguang: 0.40 } },
+    '社区代理': { rate: 0.012, recruitRates: { shidai: 0.10, qudai: 0.10, jiedai: 0.10, shequ: 0.10, fuwushang: 0.40, tuiguang: 0.40 } },
+    '服务商': { rate: 0.012, recruitRates: { shidai: 0.10, qudai: 0.10, jiedai: 0.10, shequ: 0.10, fuwushang: 0.10, tuiguang: 0.40 } },
+    '推广专员': { rate: 0.01, recruitRates: { shidai: 0.10, qudai: 0.10, jiedai: 0.10, shequ: 0.10, fuwushang: 0.10, tuiguang: 0.10 } }
+  };
+ 
+  // 礼包价格配置 
+  const packagePrices = {
+    shidai: 600000,
+    qudai: 200000,
+    jiedai: 50000,
+    shequ: 30000,
+    fuwushang: 10000,
+    tuiguang: 1000
+  };
+ 
+  function calculate() {
+    // 获取输入值
+    const agentLevel = document.getElementById('agentLevel').value; 
+    const dailySales = parseFloat(document.getElementById('dailySales').value); 
+    const shopCount = parseInt(document.getElementById('shopCount').value); 
+    const userCount = parseInt(document.getElementById('userCount').value); 
+    const userZhuqiCount = parseInt(document.getElementById('userZhuqiCount').value);
+    
+    // 获取招商数量
+    const recruitCounts = {
+      shidai: parseInt(document.getElementById('shidaiCount').value)  || 0,
+      qudai: parseInt(document.getElementById('qudaiCount').value)  || 0,
+      jiedai: parseInt(document.getElementById('jiedaiCount').value)  || 0,
+      shequ: parseInt(document.getElementById('shequCount').value)  || 0,
+      fuwushang: parseInt(document.getElementById('fuwushangCount').value)  || 0,
+      tuiguang: parseInt(document.getElementById('tuiguangCount').value)  || 0 
+    };
+ 
+    // 验证输入 
+    if (isNaN(dailySales) || isNaN(shopCount) || isNaN(userCount)) {
+      alert("请输入有效的数字！");
+      return;
+    }
+ 
+    // 获取当前代理配置 
+    const config = agentConfig[agentLevel];
+    
+    // 计算店铺收益 
+    const monthlyRevenue = dailySales * 30 * shopCount * config.rate; 
+    const yearlyRevenue = dailySales * 365 * shopCount * config.rate; 
+    
+    // 计算招商奖励 
+    let totalRecruitBonus = 0;
+    const recruitDetails = [];
+    
+    for (const [type, count] of Object.entries(recruitCounts))  {
+      const bonus = count * packagePrices[type] * config.recruitRates[type]; 
+      totalRecruitBonus += bonus;
+      
+      if (count > 0) {
+        recruitDetails.push({ 
+          name: getAgentName(type),
+          count: count,
+          bonus: bonus
+        });
+      }
+    }
+    
+    // 计算用户购买助金奖励 
+    const productReward = userCount * 50000 * 0.05 * 2; // 5%消费券+5%积分
+
+
+    // 计算用户购买助企奖励 
+    const productZhuqiReward = userZhuqiCount * 30000 * 0.05 * 2; // 5%消费券+5%积分
+    
+    
+    
+    // 生成结果HTML
+    let resultHTML = `
+      <div class="result-section">
+        <div class="result-title">${agentLevel}收益明细</div>
+        
+        <div class="result-item">
+          <span>代理分成比例：</span>
+          <span class="result-value">${(config.rate  * 100).toFixed(2)}%</span>
+        </div>
+        
+        <div class="result-item">
+          <span>店铺每月收益：</span>
+          <span class="result-value">￥${monthlyRevenue.toFixed(2)}</span> 
+        </div>
+        
+        <div class="result-item">
+          <span>店铺每年收益：</span>
+          <span class="result-value">￥${yearlyRevenue.toFixed(2)}</span> 
+        </div>
+        
+        <div class="result-item">
+          <span>用户购买助力金店礼包奖励：</span>
+          <span class="result-value">￥${productReward.toFixed(2)}</span> 
+        </div>
+
+        <div class="result-item">
+          <span>用户购买助力企业礼包奖励：</span>
+          <span class="result-value">￥${productZhuqiReward.toFixed(2)}</span>  
+        </div>
+
+
+    `;
+    
+    // 添加招商奖励明细
+    if (recruitDetails.length  > 0) {
+      resultHTML += `
+        <div style="margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+          <div style="font-weight: 600; margin-bottom: 10px;">招商奖励明细：</div>
+      `;
+      
+      recruitDetails.forEach(detail  => {
+        resultHTML += `
+          <div class="result-item" style="padding-left: 15px;">
+            <span>${detail.name}  (${detail.count} 个)：</span>
+            <span class="result-value">￥${detail.bonus.toFixed(2)}</span> 
+          </div>
+        `;
+      });
+      
+      resultHTML += `
+          <div class="result-item" style="margin-top: 10px;">
+            <span>招商奖励总计：</span>
+            <span class="result-value">￥${totalRecruitBonus.toFixed(2)}</span> 
+          </div>
+        </div>
+      `;
+    }
+    
+    // 添加总收益 
+    resultHTML += `
+       <div class="disclaimer">
+        <p>以上计算均为模拟结果，具体以实际到账为准</p>
+        <p>平台奖励不可兑换现金及金融产品</p>
+        <p>本活动与银行/金融机构无关</p>
+      </div>
+    `;
+    
+    // 显示结果
+    document.getElementById('resultContainer').innerHTML  = resultHTML;
+  }
+  
+  // 辅助函数：获取代理级别中文名称
+  function getAgentName(type) {
+    const names = {
+      'shidai': '市级代理',
+      'qudai': '区县代理',
+      'jiedai': '街道代理',
+      'shequ': '社区代理',
+      'fuwushang': '服务商',
+      'tuiguang': '推广专员'
+    };
+    return names[type] || type;
+  }
+</script>
+</body>
+</html>
