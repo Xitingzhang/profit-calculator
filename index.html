@@ -2,16 +2,11 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  
-  
-  <!-- 强制微信不缓存 -->
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
- 
-<!-- 适配移动端 -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  
+  <!-- 在<head>中添加以下meta标签增强微信兼容性 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>收益模拟计算器</title>
   <style>
     :root {
@@ -336,22 +331,22 @@
         
         <div class="result-item">
           <span>店铺每月收益：</span>
-          <span class="result-value">￥${monthlyRevenue.toFixed(2)}</span> 
+          <span class="result-value">${monthlyRevenue.toFixed(2)}消费券</span> 
         </div>
         
         <div class="result-item">
           <span>店铺每年收益：</span>
-          <span class="result-value">￥${yearlyRevenue.toFixed(2)}</span> 
+          <span class="result-value">${yearlyRevenue.toFixed(2)}消费券</span> 
         </div>
         
         <div class="result-item">
           <span>用户购买助力金店礼包奖励：</span>
-          <span class="result-value">￥${productReward.toFixed(2)}</span> 
+          <span class="result-value">${productReward.toFixed(2)}消费券</span> 
         </div>
 
         <div class="result-item">
           <span>用户购买助力企业礼包奖励：</span>
-          <span class="result-value">￥${productZhuqiReward.toFixed(2)}</span>  
+          <span class="result-value">${productZhuqiReward.toFixed(2)}消费券</span>  
         </div>
 
 
@@ -368,7 +363,7 @@
         resultHTML += `
           <div class="result-item" style="padding-left: 15px;">
             <span>${detail.name}  (${detail.count} 个)：</span>
-            <span class="result-value">￥${detail.bonus.toFixed(2)}</span> 
+            <span class="result-value">${detail.bonus.toFixed(2)}消费券</span> 
           </div>
         `;
       });
@@ -376,7 +371,7 @@
       resultHTML += `
           <div class="result-item" style="margin-top: 10px;">
             <span>招商奖励总计：</span>
-            <span class="result-value">￥${totalRecruitBonus.toFixed(2)}</span> 
+            <span class="result-value">${totalRecruitBonus.toFixed(2)}消费券</span> 
           </div>
         </div>
       `;
